@@ -92,6 +92,16 @@ const Appointment = () => {
             return navigate('/login')
         }
 
+        if (!docSlots.length || !docSlots[slotIndex]?.length) {
+            toast.error('No slots available for selected day')
+            return
+        }
+
+        if (!slotTime) {
+            toast.error('Please select a time slot')
+            return
+        }
+
         const date = docSlots[slotIndex][0].datetime
 
         let day = date.getDate()
@@ -102,7 +112,8 @@ const Appointment = () => {
 
         try {
 
-            const { data } = await axios.post(backendUrl + '/api/user/book-appointment', { docId, slotDate, slotTime }, { headers: { token } })
+            const payload = { doctorId: docId, slotDate, slotTime: String(slotTime).toLowerCase() }
+            const { data } = await axios.post(backendUrl + '/api/user/book-appointment', payload, { headers: { token } })
             if (data.success) {
                 toast.success(data.message)
                 getDoctosData()
@@ -113,7 +124,8 @@ const Appointment = () => {
 
         } catch (error) {
             console.log(error)
-            toast.error(error.message)
+            const serverMsg = error?.response?.data?.message
+            toast.error(serverMsg || error.message || 'Failed to book appointment')
         }
 
     }

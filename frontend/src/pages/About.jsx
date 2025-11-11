@@ -11,14 +11,14 @@ const About = () => {
             <img className='w-full md:max-w-[360px]' src={assets.about_image} alt="" />
             <div className='flex flex-col justify-center gap-6 md:w-2/4 text-sm text-gray-600'>
                 <p>Welcome To RK <Hospital></Hospital>, Your Trusted Partner In Managing Your HealthCare Needs Conveniently And Efficiently.
-                    At Prescripto, We Understand The Challenges Individuals Face When It Comes To Scheduling Doctor Appointments And Managing Their Health Records.
+                    At RK Hospitals, We Understand The Challenges Individuals Face When It Comes To Scheduling Doctor Appointments And Managing Their Health Records.
                 </p>
-                <p>Prescripto Is Commited To Excellence In Healthcare Technology.
+                <p>RK Hospitals Is Commited To Excellence In Healthcare Technology.
                     We Continously Strive To Enhance Our Platform, Integrating The Latest Advancements To Improve User Experience And Deliver Superior Service.
-                    Whether You're Booking Your First Appointment Or Managing Ongoing Care, Prescripto Is Here To Support You Every Step Of The Way.
+                    Whether You're Booking Your First Appointment Or Managing Ongoing Care, RK Hospitals Is Here To Support You Every Step Of The Way.
                 </p>
                 <b className='text-gray-800'>Our Vision</b>
-                <p>Our Vision At Prescripto Is To Create A Seamless HealthCare Experience For Every User.
+                <p>Our Vision At RK Hospitals Is To Create A Seamless HealthCare Experience For Every User.
                     We Aim To Bridge The Gap Between Patients And HealthCare Providers, Making It Easier For You To Access The Care You Need, When You Need It.
                 </p>
             </div>
