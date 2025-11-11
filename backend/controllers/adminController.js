@@ -65,8 +65,8 @@ const addDoctor = async (req, res) => {
         const { name, email, password, speciality, degree, experience, about, fees, address } = req.body
         const imageFile = req.file
 
-        // checking for all data to add doctor
-        if (!name || !email || !password || !speciality || !degree || !experience || !about || !fees || !address) {
+        // checking for all required data to add doctor
+        if (!name || !email || !password || !speciality || !degree || !about || (!fees && fees !== 0) || !address) {
             return res.json({ success: false, message: "Missing Details" })
         }
 
@@ -81,12 +81,33 @@ const addDoctor = async (req, res) => {
         }
 
         // hashing user password
-        const salt = await bcrypt.genSalt(10); // the more no. round the more time it will take
+        const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt)
 
-        // upload image to cloudinary
-        const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" })
-        const imageUrl = imageUpload.secure_url
+        // parse numeric fields
+        const experienceNum = Number(experience) || 0
+        const feesNum = Number(fees) || 0
+
+        // parse address safely (accept stringified JSON or object)
+        let parsedAddress = {};
+        try {
+            parsedAddress = (typeof address === 'string') ? JSON.parse(address) : address;
+        } catch (err) {
+            // fallback: store raw address string
+            parsedAddress = { raw: address };
+        }
+
+        // upload image to cloudinary if provided; don't fail creation if upload fails
+        let imageUrl = '';
+        if (imageFile && imageFile.path) {
+            try {
+                const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" })
+                imageUrl = imageUpload.secure_url || ''
+            } catch (uploadErr) {
+                console.warn('Cloudinary upload failed, continuing without remote image:', uploadErr.message || uploadErr);
+                imageUrl = '' // continue without image
+            }
+        }
 
         const doctorData = {
             name,
@@ -95,19 +116,28 @@ const addDoctor = async (req, res) => {
             password: hashedPassword,
             speciality,
             degree,
-            experience,
+            experience: experienceNum,
             about,
-            fees,
-            address: JSON.parse(address),
+            fees: feesNum,
+            address: parsedAddress,
             date: Date.now()
         }
 
         const newDoctor = new doctorModel(doctorData)
         await newDoctor.save()
-        res.json({ success: true, message: 'Doctor Added' })
+
+        // remove password before sending response
+        const doctorResponse = newDoctor.toObject();
+        delete doctorResponse.password;
+
+        res.json({ success: true, message: 'Doctor Added', doctor: doctorResponse })
 
     } catch (error) {
         console.log(error)
+        // duplicate key (email) handling
+        if (error && error.code === 11000) {
+            return res.json({ success: false, message: 'Email already exists' })
+        }
         res.json({ success: false, message: error.message })
     }
 }

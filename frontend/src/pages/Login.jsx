@@ -15,34 +15,38 @@ const Login = () => {
   const navigate = useNavigate()
   const { backendUrl, token, setToken } = useContext(AppContext)
 
-  const onSubmitHandler = async (event) => {
-    event.preventDefault();
-
+const onSubmitHandler = async (event) => {
+  event.preventDefault(); //
+  try {
     if (state === 'Sign Up') {
-
-      const { data } = await axios.post(backendUrl + '/api/user/register', { name, email, password })
-
+      const { data } = await axios.post(`${backendUrl}/api/user/register`, { name, email, password }); //
       if (data.success) {
-        localStorage.setItem('token', data.token)
-        setToken(data.token)
+        localStorage.setItem('token', data.token); //
+        setToken(data.token); //
       } else {
-        toast.error(data.message)
+        toast.error(data.message); //
       }
-
     } else {
-
-      const { data } = await axios.post(backendUrl + '/api/user/login', { email, password })
-
+      const { data } = await axios.post(`${backendUrl}/api/user/login`, { email, password }); //
       if (data.success) {
-        localStorage.setItem('token', data.token)
-        setToken(data.token)
+        localStorage.setItem('token', data.token); //
+        setToken(data.token); //
       } else {
-        toast.error(data.message)
+        toast.error(data.message); //
       }
-
     }
-
+  } catch (err) {
+    // --- START NEW/UPDATED CODE ---
+    console.error('API Call Failed:', err);
+    if (err.response) {
+      console.error('Server Response Data:', err.response.data);
+      toast.error(err.response.data.message || 'An error occurred during sign up/login.');
+    } else {
+      toast.error('Network or server error.');
+    }
+    // --- END NEW/UPDATED CODE ---
   }
+};
 
   useEffect(() => {
     if (token) {

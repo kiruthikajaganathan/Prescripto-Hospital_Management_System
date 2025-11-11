@@ -10,7 +10,7 @@ const About = () => {
         <div className='my-10 flex flex-col md:flex-row gap-12'>
             <img className='w-full md:max-w-[360px]' src={assets.about_image} alt="" />
             <div className='flex flex-col justify-center gap-6 md:w-2/4 text-sm text-gray-600'>
-                <p>Welcome To Prescripto, Your Trusted Partner In Managing Your HealthCare Needs Conveniently And Efficiently.
+                <p>Welcome To RK <Hospital></Hospital>, Your Trusted Partner In Managing Your HealthCare Needs Conveniently And Efficiently.
                     At Prescripto, We Understand The Challenges Individuals Face When It Comes To Scheduling Doctor Appointments And Managing Their Health Records.
                 </p>
                 <p>Prescripto Is Commited To Excellence In Healthcare Technology.
